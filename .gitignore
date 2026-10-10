@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+coverage/
+.ripple/
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+.env
+.env.*
+*.log
+recordings/
+*.mp4
+*.mov
+*.webm
