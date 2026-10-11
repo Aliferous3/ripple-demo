@@ -6,7 +6,7 @@ output shown is the observed result — not a mockup.
 
 Run Ripple from the repo root: `ripple impact` for one-shot analysis or
 `ripple explore` for the live explorer. Between scenarios, reset with
-`git reset --hard demo-v2 && git clean -fd`.
+`git reset --hard demo-v3 && git clean -fd`.
 
 All results below are runtime `calls` impact unless stated otherwise.
 Affected ≠ broken — these are symbols whose inputs changed, with
