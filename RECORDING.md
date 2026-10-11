@@ -5,7 +5,7 @@ that shows evidence.
 
 Before recording:
 
-1. `git reset --hard demo-v1 && git clean -fd`
+1. `git reset --hard demo-v2 && git clean -fd`
 2. Have VS Code open on `web/src/formatDate.ts` and the Ripple explorer
    running (`ripple explore`) side-by-side.
 3. Close unrelated tabs/windows. This repo is safe for 4K capture.
@@ -53,4 +53,4 @@ Optional add-on takes (not in the 90s cut):
   impact surfaces, runtime list stays clean.
 - Deletion: remove `legacyOrderLabel` — DELETED tombstone with former
   caller `formatLegacySummary`.
-- Reset on camera: `git reset --hard demo-v1 && git clean -fd`.
+- Reset on camera: `git reset --hard demo-v2 && git clean -fd`.

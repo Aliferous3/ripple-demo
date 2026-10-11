@@ -42,7 +42,7 @@ relationships.
 ## Reset
 
 ```sh
-git reset --hard demo-v1
+git reset --hard demo-v2
 git clean -fd
 ```
 

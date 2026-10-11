@@ -6,7 +6,7 @@ output shown is the observed result — not a mockup.
 
 Run Ripple from the repo root: `ripple impact` for one-shot analysis or
 `ripple explore` for the live explorer. Between scenarios, reset with
-`git reset --hard demo-v1 && git clean -fd`.
+`git reset --hard demo-v2 && git clean -fd`.
 
 All results below are runtime `calls` impact unless stated otherwise.
 Affected ≠ broken — these are symbols whose inputs changed, with
@@ -18,13 +18,14 @@ evidence.
 
 File: `web/src/formatDate.ts`
 
-Baseline:
+Baseline (inside `formatDate`):
 
 ```ts
-return date.toLocaleDateString("en-US", {
+return date.toLocaleDateString(DISPLAY_LOCALE, {
   year: "numeric",
   month: "short",
   day: "2-digit",
+  timeZone: DISPLAY_TIME_ZONE,
 });
 ```
 
@@ -75,6 +76,9 @@ export interface Order {
   id: string;
   customerName: string;
   total: number;
+  currency: Currency;
+  status: OrderStatus;
+  itemCount: number;
   createdAt: Date;
   notes?: string;   // add this line
 }
@@ -103,13 +107,13 @@ File: `worker/src/formatCustomerName.js`
 Edit:
 
 ```js
-return `${firstName} ${lastName}`;
+return `${first} ${last}`;
 ```
 
 →
 
 ```js
-return `${lastName}, ${firstName}`;
+return `${last}, ${first}`;
 ```
 
 Observed:
@@ -128,15 +132,18 @@ Plain `.js` — no TypeScript needed for semantic call graphs.
 
 File: `python-service/demo_service/pricing.py`
 
-Edit: `return total * 0.10` → `return total * 0.15`. Save.
+Edit: `rate = 0.10` → `rate = 0.15` inside `calculate_discount`. Save.
 
 Observed:
 
 ```text
 changed:    calculate_discount()
 direct:     calculate_total()
-transitive: build_invoice(), checkout(), test_checkout_returns_paid_invoice()
-tests:      test_checkout.py → test_checkout_returns_paid_invoice()
+transitive: build_invoice(), checkout(),
+            test_checkout_returns_paid_invoice(),
+            test_checkout_invoice_shape(),
+            test_checkout_rejects_invalid_subtotal()
+tests:      test_checkout.py — all three checkout tests
 ```
 
 Chain: `calculate_discount → calculate_total → build_invoice → checkout → test_checkout`.
@@ -181,11 +188,16 @@ Must NOT appear: a `calls` edge from `checkout.py` (or
 
 File: `web/src/legacy.ts`
 
-Edit: delete the whole `legacyOrderLabel` function:
+Edit: delete the `legacyOrderLabel` function (including its docstring):
 
 ```ts
+/**
+ * Deprecated label format kept for the archived badge view.
+ * New code should use OrderCard, not this badge.
+ */
 export function legacyOrderLabel(order: Order): string {
-  return `#${order.id}`;
+  const shortId = order.id.replace(/^A-/, "");
+  return `${LEGACY_PREFIX}-${shortId}`;
 }
 ```
 
